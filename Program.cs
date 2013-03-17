@@ -4,18 +4,21 @@ using System;
  Port of http://axiom-developer.org/axiom-website/litprog.html to C# / mono
 */
 using System.IO;
-
+using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace mtangle
 {
+	/*
+		Of course this would be better if it were XML parsed, but this is a straight port of a text strategy
+	*/
 	public class MainClass
 	{
-		static readonly string chunkBegin = "<pre id=\"";
-		static readonly int chunkBeginLength = 9;
+		static readonly string chunkStart = "<pre id=\"{0}\">";
 		static readonly string chunkEnd = "</pre>";           
-		static readonly int chunkEndLengthgth = 6;
-		static readonly string chunkGet = "<getchunk id=\"";  
-		static readonly int chunkGetLength = 14;
+
+		static readonly string chunkGetForm = "<getchunk id=\"?(.*?)\"/>";
+
 
 		public static void Main (string[] args)
 		{
@@ -27,20 +30,58 @@ namespace mtangle
 			StreamReader streamReader = new StreamReader(args[0]);
 			string html = streamReader.ReadToEnd();
 			streamReader.Close();
-			string htmlFixed = fixHTMLCode(html); 
-			string code = getchunk(htmlFixed, args[1]);
+			string htmlFixed = FixHTMLCode(html); 
+			string code = GetChunk(htmlFixed, args[1]);
 			Console.WriteLine (code);
 		}
 
-		static string fixHTMLCode(string html)
+		public static string FixHTMLCode(string html)
 		{
-			return html;
+			var sansLT = html.Replace("&lt;", "<");
+			var sansGT = sansLT.Replace("&gt;", ">");
+			return sansGT;
 		}
 
-		static string getchunk(string html, string chunkName)
+		public static string GetChunk(string html, string chunkName)
 		{
-			return html;
+			//Would be better if I could rely on XML parsing, but I'm just goin to hard-code in strict text
+			var chunkTag = String.Format (chunkStart, chunkName);
+			var chunkLocation = html.IndexOf(chunkTag);
+			if(chunkLocation >= 0)
+			{
+				//Found it
+				var postChunk = html.Substring(chunkLocation + chunkTag.Length);
+				var chunkWithPossibleGetChunks = postChunk.Substring(0, postChunk.IndexOf(chunkEnd));
+				var chunk = ResolveGetChunks(html, chunkWithPossibleGetChunks);
+				return chunk;
+			}
+			else
+			{
+				//No chunk. Return empty (Or should it throw?)
+				return "";
+			}
 		}
+
+		public static string ResolveGetChunks(string html, string chunk)
+		{
+			var matches = Regex.Matches(chunk, chunkGetForm);
+			if(matches.Count > 0)
+			{
+				var replaced = chunk;
+				foreach(Match match in matches)
+				{
+					var innerChunkName = match.Groups[1].Value;
+					var innerChunk = GetChunk(html, innerChunkName);
+					replaced = replaced.Replace(match.Groups[0].Value, innerChunk);
+				}
+				return replaced;
+			}
+			else
+			{
+				return chunk;
+			}
+		}
+
 //		static int bufsize = 0;
 //
 //		
@@ -138,25 +179,7 @@ namespace mtangle
 //			return(i);
 //		}
 //		
-//		void fixHTMLcode() {
-//			int point = 0;
-//			int mark = 0;
-//			int i=0;
-//			for(point = 0; point < bufsize;) {
-//				if ((buffer[point] == '&') &&
-//				    (strncmp(&buffer[point+1],"lt;",3) == 0)) {
-//					buffer[mark++] = 60;
-//					point = point + 4;  
-//				} else
-//					if ((buffer[point] == '&') &&
-//					   (strncmp(&buffer[point+1],"gt;",3) == 0)) {
-//					buffer[mark++] = 62;
-//					point = point + 4;  
-//				} else
-//					buffer[mark++] = buffer[point++]; 
-//			}
-//			bufsize = mark;
-//		}
+	
 //		
 //		/* memory map the input file into the global buffer and get the chunk */
 //		int main(int argc, char *argv[]) {
