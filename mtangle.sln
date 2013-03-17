@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mtangle", "mtangle.csproj", "{8E75271C-33E2-4925-B2B1-3DE8CEA50700}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "tests\tests.csproj", "{B6D43E73-3733-4BE9-ABE2-B54F84ED5A66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,8 +15,12 @@ Global
 		{8E75271C-33E2-4925-B2B1-3DE8CEA50700}.Debug|x86.Build.0 = Debug|x86
 		{8E75271C-33E2-4925-B2B1-3DE8CEA50700}.Release|x86.ActiveCfg = Release|x86
 		{8E75271C-33E2-4925-B2B1-3DE8CEA50700}.Release|x86.Build.0 = Release|x86
+		{B6D43E73-3733-4BE9-ABE2-B54F84ED5A66}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B6D43E73-3733-4BE9-ABE2-B54F84ED5A66}.Debug|x86.Build.0 = Debug|Any CPU
+		{B6D43E73-3733-4BE9-ABE2-B54F84ED5A66}.Release|x86.ActiveCfg = Release|Any CPU
+		{B6D43E73-3733-4BE9-ABE2-B54F84ED5A66}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = mtangle.csproj
+		StartupItem = tests\tests.csproj
 	EndGlobalSection
 EndGlobal
