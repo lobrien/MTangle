@@ -26,8 +26,8 @@ namespace mtangle
 			StreamReader streamReader = new StreamReader(args[0]);
 			string html = streamReader.ReadToEnd();
 			streamReader.Close();
-			string htmlFixed = FixHTMLCode(html); 
-			string code = GetChunk(htmlFixed, args[1]);
+			string code = GetChunk(html, args[1]);
+			Console.WriteLine (code);
 		}
 
 		public static string FixHTMLCode(string html)
@@ -47,7 +47,8 @@ namespace mtangle
 				//Found it
 				var postChunk = html.Substring(chunkLocation + chunkTag.Length);
 				var chunkWithPossibleGetChunks = postChunk.Substring(0, postChunk.IndexOf(chunkEnd));
-				var chunk = ResolveGetChunks(html, chunkWithPossibleGetChunks);
+				var fixedChunk = FixHTMLCode(chunkWithPossibleGetChunks);
+				var chunk = ResolveGetChunks(html, fixedChunk);
 				return chunk;
 			}
 			else
@@ -62,7 +63,6 @@ namespace mtangle
 			var matches = Regex.Matches(chunk, chunkGetForm);
 			if(matches.Count > 0)
 			{
-				Console.WriteLine ("{0} matches", matches.Count);
 				var replaced = chunk;
 				foreach(Match match in matches)
 				{
