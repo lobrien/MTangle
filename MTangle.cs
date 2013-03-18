@@ -1,18 +1,14 @@
 using System;
-
-/*
- Port of http://axiom-developer.org/axiom-website/litprog.html to C# / mono
-*/
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Linq;
 
 namespace mtangle
 {
 	/*
+		Port of http://axiom-developer.org/axiom-website/litprog.html to C# / mono
 		Of course this would be better if it were XML parsed, but this is a straight port of a text strategy
 	*/
-	public class MainClass
+	public class MTangle
 	{
 		static readonly string chunkStart = "<pre id=\"{0}\">";
 		static readonly string chunkEnd = "</pre>";           
@@ -32,7 +28,6 @@ namespace mtangle
 			streamReader.Close();
 			string htmlFixed = FixHTMLCode(html); 
 			string code = GetChunk(htmlFixed, args[1]);
-			Console.WriteLine (code);
 		}
 
 		public static string FixHTMLCode(string html)
@@ -44,7 +39,7 @@ namespace mtangle
 
 		public static string GetChunk(string html, string chunkName)
 		{
-			//Would be better if I could rely on XML parsing, but I'm just goin to hard-code in strict text
+			//Would be better if I could rely on XML parsing, but I'm just going to hard-code in strict text
 			var chunkTag = String.Format (chunkStart, chunkName);
 			var chunkLocation = html.IndexOf(chunkTag);
 			if(chunkLocation >= 0)
@@ -67,6 +62,7 @@ namespace mtangle
 			var matches = Regex.Matches(chunk, chunkGetForm);
 			if(matches.Count > 0)
 			{
+				Console.WriteLine ("{0} matches", matches.Count);
 				var replaced = chunk;
 				foreach(Match match in matches)
 				{

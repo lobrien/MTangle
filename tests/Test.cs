@@ -13,19 +13,19 @@ namespace tests
 			Assert.Throws<ArgumentException>(
 				delegate 
 				{ 
-					MainClass.Main(new String[] {});
+					MTangle.Main(new String[] {});
 				});
 
 			Assert.Throws<ArgumentException>(
 				delegate 
 				{ 
-				MainClass.Main(new String[] {"justOne"});
+				MTangle.Main(new String[] {"justOne"});
 			});
 
 			Assert.Throws<ArgumentException>(
 				delegate 
 				{ 
-				MainClass.Main(new String[] {"too", "many", "args"});
+				MTangle.Main(new String[] {"too", "many", "args"});
 			});
 
 		}
@@ -34,7 +34,7 @@ namespace tests
 		public void FixesHTMLEscapes()
 		{
 			string bad = "Some text &lt;element&gt;";
-			string good = MainClass.FixHTMLCode(bad);
+			string good = MTangle.FixHTMLCode(bad);
 			Assert.AreEqual("Some text <element>", good);
 		}
 
@@ -46,7 +46,7 @@ namespace tests
 				"chunk" + 
 				"</pre>";
 
-			string chunk = MainClass.GetChunk(enchunked, "chunk");
+			string chunk = MTangle.GetChunk(enchunked, "chunk");
 			Assert.AreEqual("chunk", chunk);
 		}
 
@@ -54,7 +54,7 @@ namespace tests
 		public void ReturnsEmptyIfNoChunk()
 		{
 			string noChunk = "<p>adfadfadfadfasdfasdf chunk asdfasdfadsfasdfasdf</p>";
-			string empty = MainClass.GetChunk(noChunk, "chunk");
+			string empty = MTangle.GetChunk(noChunk, "chunk");
 			Assert.IsEmpty(empty);
 		}
 
@@ -65,7 +65,7 @@ namespace tests
 				"<pre id=\"chunk\">" +
 					"chunk" + 
 					"</pre>";
-			string same = MainClass.ResolveGetChunks(enchunked, MainClass.GetChunk(enchunked, "chunk"));
+			string same = MTangle.ResolveGetChunks(enchunked, MTangle.GetChunk(enchunked, "chunk"));
 			Assert.AreEqual("chunk", same);
 		}
 
@@ -83,7 +83,7 @@ namespace tests
 					"<getchunk id=\"chunk\"/>" +
 					"post" +
 				"\n</pre>";
-			string got = MainClass.ResolveGetChunks(enchunked, MainClass.GetChunk(enchunked, "second"));
+			string got = MTangle.ResolveGetChunks(enchunked, MTangle.GetChunk(enchunked, "second"));
 			Assert.AreEqual("prechunkpost\n", got);
 		}
 	}
